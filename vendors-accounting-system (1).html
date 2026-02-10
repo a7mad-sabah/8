@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounting System - Vendors Module</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0066FF;
+            --primary-dark: #0052CC;
+            --primary-light: #E6F0FF;
+            --secondary: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --purple: #8B5CF6;
+            --bg-main: #F8FAFC;
+            --bg-card: #FFFFFF;
+            --text-primary: #1E293B;
+            --text-secondary: #64748B;
+            --border: #E2E8F0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Outfit', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0066FF 0%, #0052CC 100%);
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(10px, 10px) scale(1.1); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: var(--bg-card);
+            padding: 1rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 2px solid var(--border);
+            border-radius: calc(var(--radius) - 4px);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 16px rgba(0, 102, 255, 0.3);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Content Card */
+        .content-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .content-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: calc(var(--radius) - 4px);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 102, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 102, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-main);
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Search and Filter */
+        .search-filter {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: calc(var(--radius) - 4px);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1rem;
+        }
+
+        .data-table thead {
+            background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+        }
+
+        .data-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 700;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--primary-light);
+            transform: scale(1.01);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .data-table td {
+            padding: 1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Status Badges */
+        .badge {
+            display: inline-block;
+            padding: 0.35rem 0.875rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--secondary);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .badge-info {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--purple);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, white 0%, #F8FAFC 100%);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            opacity: 0.05;
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .stat-change.positive {
+            color: var(--secondary);
+        }
+
+        .stat-change.negative {
+            color: var(--danger);
+        }
+
+        /* Action Icons */
+        .action-icons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .icon-btn:hover {
+            background: var(--primary-light);
+            transform: scale(1.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .search-filter {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <h1>🏢 Accounting System</h1>
+                <p>Vendor Management & Related Operations</p>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('vendors')">
+                📋 Vendors
+            </button>
+            <button class="nav-tab" onclick="switchTab('payment')">
+                💳 Payment
+            </button>
+            <button class="nav-tab" onclick="switchTab('purchase')">
+                🛒 Purchase
+            </button>
+            <button class="nav-tab" onclick="switchTab('debit-notes')">
+                📝 Debit Notes
+            </button>
+            <button class="nav-tab" onclick="switchTab('notes-payable')">
+                📄 Notes Payable
+            </button>
+        </div>
+
+        <!-- Tab 1: Vendors -->
+        <div id="vendors" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Vendors</div>
+                    <div class="stat-value">248</div>
+                    <div class="stat-change positive">↑ 12% from last month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Active Vendors</div>
+                    <div class="stat-value">187</div>
+                    <div class="stat-change positive">↑ 8.5%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Payables</div>
+                    <div class="stat-value">$1,245,000</div>
+                    <div class="stat-change negative">↓ 3.2%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">This Month's Transactions</div>
+                    <div class="stat-value">$324,500</div>
+                    <div class="stat-change positive">↑ 15%</div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="content-header">
+                    <h2>Vendor List</h2>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary">
+                            ➕ Add New Vendor
+                        </button>
+                        <button class="btn btn-secondary">
+                            📊 Reports
+                        </button>
+                    </div>
+                </div>
+
+                <div class="search-filter">
+                    <div class="input-group">
+                        <input type="text" placeholder="🔍 Search by name, code, or phone...">
+                    </div>
+                    <div class="input-group">
+                        <select>
+                            <option>All Status</option>
+                            <option>Active</option>
+                            <option>Inactive</option>
+                            <option>Pending</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <select>
+                            <option>All Categories</option>
+                            <option>Food & Beverage</option>
+                            <option>Construction Materials</option>
+                            <option>Services</option>
+                        </select>
+                    </div>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Vendor Name</th>
+                            <th>Category</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Balance</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>V-001</strong></td>
+                            <td>Sulaymaniyah Food Company</td>
+                            <td>Food & Beverage</td>
+                            <td>0770 123 4567</td>
+                            <td>info@sulaimani-food.com</td>
+                            <td><strong>$45,200</strong></td>
+                            <td><span class="badge badge-success">Active</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Edit">✏️</button>
+                                    <button class="icon-btn" title="Delete">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>V-002</strong></td>
+                            <td>Erbil Construction Materials</td>
+                            <td>Construction</td>
+                            <td>0750 987 6543</td>
+                            <td>contact@hawler-build.com</td>
+                            <td><strong>$128,900</strong></td>
+                            <td><span class="badge badge-success">Active</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Edit">✏️</button>
+                                    <button class="icon-btn" title="Delete">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>V-003</strong></td>
+                            <td>Duhok Tech Company</td>
+                            <td>Technology</td>
+                            <td>0780 456 7890</td>
+                            <td>hello@duhok-tech.iq</td>
+                            <td><strong>$67,300</strong></td>
+                            <td><span class="badge badge-warning">Pending</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Edit">✏️</button>
+                                    <button class="icon-btn" title="Delete">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>V-004</strong></td>
+                            <td>Kirkuk Transport Services</td>
+                            <td>Services</td>
+                            <td>0770 234 5678</td>
+                            <td>service@kirkuk-trans.com</td>
+                            <td><strong>$22,450</strong></td>
+                            <td><span class="badge badge-success">Active</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Edit">✏️</button>
+                                    <button class="icon-btn" title="Delete">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>V-005</strong></td>
+                            <td>Zakho Import Export</td>
+                            <td>Trading</td>
+                            <td>0750 876 5432</td>
+                            <td>trade@zakho-ie.com</td>
+                            <td><strong>$0</strong></td>
+                            <td><span class="badge badge-danger">Inactive</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Edit">✏️</button>
+                                    <button class="icon-btn" title="Delete">🗑️</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab 2: Payment -->
+        <div id="payment" class="tab-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Payments This Month</div>
+                    <div class="stat-value">$186,400</div>
+                    <div class="stat-change positive">↑ 22%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Pending Invoices</div>
+                    <div class="stat-value">42</div>
+                    <div class="stat-change negative">↓ 5%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Successful Payments</div>
+                    <div class="stat-value">234</div>
+                    <div class="stat-change positive">↑ 18%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Average Payment</div>
+                    <div class="stat-value">$796</div>
+                    <div class="stat-change positive">↑ 4%</div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="content-header">
+                    <h2>Payment History</h2>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary">
+                            ➕ New Payment
+                        </button>
+                        <button class="btn btn-secondary">
+                            📥 Export
+                        </button>
+                    </div>
+                </div>
+
+                <div class="search-filter">
+                    <div class="input-group">
+                        <input type="text" placeholder="🔍 Search by invoice number or vendor name...">
+                    </div>
+                    <div class="input-group">
+                        <select>
+                            <option>All Methods</option>
+                            <option>Cash</option>
+                            <option>Check</option>
+                            <option>Bank Transfer</option>
+                            <option>Credit Card</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <input type="date">
+                    </div>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Payment ID</th>
+                            <th>Date</th>
+                            <th>Vendor Name</th>
+                            <th>Amount</th>
+                            <th>Method</th>
+                            <th>Invoice #</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>PAY-2026-001</strong></td>
+                            <td>2026-02-08</td>
+                            <td>Sulaymaniyah Food Company</td>
+                            <td><strong>$12,500</strong></td>
+                            <td>Bank Transfer</td>
+                            <td>INV-2026-045</td>
+                            <td><span class="badge badge-success">Completed</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Print">🖨️</button>
+                                    <button class="icon-btn" title="Download">📥</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>PAY-2026-002</strong></td>
+                            <td>2026-02-07</td>
+                            <td>Erbil Construction Materials</td>
+                            <td><strong>$45,800</strong></td>
+                            <td>Check</td>
+                            <td>INV-2026-042</td>
+                            <td><span class="badge badge-warning">Pending</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Print">🖨️</button>
+                                    <button class="icon-btn" title="Download">📥</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>PAY-2026-003</strong></td>
+                            <td>2026-02-06</td>
+                            <td>Duhok Tech Company</td>
+                            <td><strong>$8,200</strong></td>
+                            <td>Credit Card</td>
+                            <td>INV-2026-038</td>
+                            <td><span class="badge badge-success">Completed</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Print">🖨️</button>
+                                    <button class="icon-btn" title="Download">📥</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>PAY-2026-004</strong></td>
+                            <td>2026-02-05</td>
+                            <td>Kirkuk Transport Services</td>
+                            <td><strong>$3,450</strong></td>
+                            <td>Cash</td>
+                            <td>INV-2026-034</td>
+                            <td><span class="badge badge-success">Completed</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Print">🖨️</button>
+                                    <button class="icon-btn" title="Download">📥</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab 3: Purchase -->
+        <div id="purchase" class="tab-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Purchase Requests This Month</div>
+                    <div class="stat-value">156</div>
+                    <div class="stat-change positive">↑ 14%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Approved Requests</div>
+                    <div class="stat-value">128</div>
+                    <div class="stat-change positive">↑ 12%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Purchase Value</div>
+                    <div class="stat-value">$428,900</div>
+                    <div class="stat-change positive">↑ 25%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Average Processing Time</div>
+                    <div class="stat-value">3.2 days</div>
+                    <div class="stat-change negative">↓ 8%</div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="content-header">
+                    <h2>Purchase Requests</h2>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary">
+                            ➕ New Purchase Request
+                        </button>
+                        <button class="btn btn-secondary">
+                            📑 Bulk Request
+                        </button>
+                    </div>
+                </div>
+
+                <div class="search-filter">
+                    <div class="input-group">
+                        <input type="text" placeholder="🔍 Search by number, item name, or vendor...">
+                    </div>
+                    <div class="input-group">
+                        <select>
+                            <option>All Status</option>
+                            <option>Requested</option>
+                            <option>Approved</option>
+                            <option>Received</option>
+                            <option>Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <select>
+                            <option>All Departments</option>
+                            <option>Production</option>
+                            <option>Sales</option>
+                            <option>Warehouse</option>
+                            <option>Office</option>
+                        </select>
+                    </div>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>PR Number</th>
+                            <th>Date</th>
+                            <th>Department</th>
+                            <th>Items</th>
+                            <th>Suggested Vendor</th>
+                            <th>Total Value</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>PR-2026-087</strong></td>
+                            <td>2026-02-08</td>
+                            <td>Production</td>
+                            <td>Raw Materials (15 items)</td>
+                            <td>Erbil Construction Materials</td>
+                            <td><strong>$28,400</strong></td>
+                            <td><span class="badge badge-warning">Pending</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Approve">✅</button>
+                                    <button class="icon-btn" title="Reject">❌</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>PR-2026-086</strong></td>
+                            <td>2026-02-07</td>
+                            <td>Sales</td>
+                            <td>Dry Food (8 items)</td>
+                            <td>Sulaymaniyah Food Company</td>
+                            <td><strong>$15,600</strong></td>
+                            <td><span class="badge badge-success">Approved</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Edit">✏️</button>
+                                    <button class="icon-btn" title="Print">🖨️</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>PR-2026-085</strong></td>
+                            <td>2026-02-06</td>
+                            <td>Office</td>
+                            <td>Stationery (12 items)</td>
+                            <td>Duhok Tech Company</td>
+                            <td><strong>$4,200</strong></td>
+                            <td><span class="badge badge-info">Received</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Print">🖨️</button>
+                                    <button class="icon-btn" title="Download">📥</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>PR-2026-084</strong></td>
+                            <td>2026-02-05</td>
+                            <td>Warehouse</td>
+                            <td>Packing Boxes (20 units)</td>
+                            <td>Zakho Import Export</td>
+                            <td><strong>$1,800</strong></td>
+                            <td><span class="badge badge-danger">Cancelled</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Re-request">🔄</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab 4: Debit Notes -->
+        <div id="debit-notes" class="tab-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Debit Notes This Month</div>
+                    <div class="stat-value">23</div>
+                    <div class="stat-change positive">↑ 6%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Return Amount</div>
+                    <div class="stat-value">$18,640</div>
+                    <div class="stat-change negative">↓ 12%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Pending Status</div>
+                    <div class="stat-value">8</div>
+                    <div class="stat-change positive">↑ 2%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Completed</div>
+                    <div class="stat-value">15</div>
+                    <div class="stat-change positive">↑ 25%</div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="content-header">
+                    <h2>Debit Notes - Product Returns</h2>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary">
+                            ➕ New Debit Note
+                        </button>
+                        <button class="btn btn-secondary">
+                            📊 Return Report
+                        </button>
+                    </div>
+                </div>
+
+                <div class="search-filter">
+                    <div class="input-group">
+                        <input type="text" placeholder="🔍 Search by number, vendor, or reason...">
+                    </div>
+                    <div class="input-group">
+                        <select>
+                            <option>All Status</option>
+                            <option>Requested</option>
+                            <option>Approved</option>
+                            <option>Completed</option>
+                            <option>Rejected</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <select>
+                            <option>All Reasons</option>
+                            <option>Defective Product</option>
+                            <option>Wrong Order</option>
+                            <option>Poor Quality</option>
+                            <option>Expired</option>
+                        </select>
+                    </div>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>DN Number</th>
+                            <th>Date</th>
+                            <th>Vendor Name</th>
+                            <th>Original Invoice #</th>
+                            <th>Return Reason</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>DN-2026-012</strong></td>
+                            <td>2026-02-08</td>
+                            <td>Sulaymaniyah Food Company</td>
+                            <td>INV-2026-044</td>
+                            <td>Defective Product</td>
+                            <td><strong>$2,400</strong></td>
+                            <td><span class="badge badge-warning">Pending</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Approve">✅</button>
+                                    <button class="icon-btn" title="Reject">❌</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>DN-2026-011</strong></td>
+                            <td>2026-02-06</td>
+                            <td>Erbil Construction Materials</td>
+                            <td>INV-2026-040</td>
+                            <td>Poor Quality</td>
+                            <td><strong>$8,950</strong></td>
+                            <td><span class="badge badge-success">Approved</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Print">🖨️</button>
+                                    <button class="icon-btn" title="Download">📥</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>DN-2026-010</strong></td>
+                            <td>2026-02-05</td>
+                            <td>Duhok Tech Company</td>
+                            <td>INV-2026-037</td>
+                            <td>Wrong Order</td>
+                            <td><strong>$1,200</strong></td>
+                            <td><span class="badge badge-info">Completed</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Print">🖨️</button>
+                                    <button class="icon-btn" title="Download">📥</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>DN-2026-009</strong></td>
+                            <td>2026-02-03</td>
+                            <td>Kirkuk Transport Services</td>
+                            <td>INV-2026-033</td>
+                            <td>Expired</td>
+                            <td><strong>$550</strong></td>
+                            <td><span class="badge badge-danger">Rejected</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Re-request">🔄</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab 5: Notes Payable -->
+        <div id="notes-payable" class="tab-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Notes Payable</div>
+                    <div class="stat-value">$892,500</div>
+                    <div class="stat-change positive">↑ 8%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">This Month's Installment</div>
+                    <div class="stat-value">$45,200</div>
+                    <div class="stat-change negative">↓ 3%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Active Notes</div>
+                    <div class="stat-value">18</div>
+                    <div class="stat-change positive">↑ 2</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Average Interest Rate</div>
+                    <div class="stat-value">5.2%</div>
+                    <div class="stat-change negative">↓ 0.3%</div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="content-header">
+                    <h2>Notes Payable - Long-term Liabilities</h2>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary">
+                            ➕ New Note
+                        </button>
+                        <button class="btn btn-secondary">
+                            📈 Payment Schedule
+                        </button>
+                    </div>
+                </div>
+
+                <div class="search-filter">
+                    <div class="input-group">
+                        <input type="text" placeholder="🔍 Search by number or vendor name...">
+                    </div>
+                    <div class="input-group">
+                        <select>
+                            <option>All Status</option>
+                            <option>Active</option>
+                            <option>Completed</option>
+                            <option>Overdue</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <select>
+                            <option>All Terms</option>
+                            <option>6 months</option>
+                            <option>12 months</option>
+                            <option>24 months</option>
+                            <option>36 months</option>
+                        </select>
+                    </div>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Note Number</th>
+                            <th>Vendor Name</th>
+                            <th>Principal Amount</th>
+                            <th>Term</th>
+                            <th>Interest Rate</th>
+                            <th>Payment Frequency</th>
+                            <th>Maturity Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>NP-2025-008</strong></td>
+                            <td>Erbil Construction Materials</td>
+                            <td><strong>$250,000</strong></td>
+                            <td>24 months</td>
+                            <td>5.5%</td>
+                            <td>Monthly</td>
+                            <td>2027-06-15</td>
+                            <td><span class="badge badge-success">Active</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Payment">💳</button>
+                                    <button class="icon-btn" title="History">📋</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>NP-2025-007</strong></td>
+                            <td>Sulaymaniyah Food Company</td>
+                            <td><strong>$180,000</strong></td>
+                            <td>18 months</td>
+                            <td>4.8%</td>
+                            <td>Monthly</td>
+                            <td>2026-12-20</td>
+                            <td><span class="badge badge-success">Active</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Payment">💳</button>
+                                    <button class="icon-btn" title="History">📋</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>NP-2024-006</strong></td>
+                            <td>Duhok Tech Company</td>
+                            <td><strong>$95,000</strong></td>
+                            <td>12 months</td>
+                            <td>6.2%</td>
+                            <td>Quarterly</td>
+                            <td>2026-08-10</td>
+                            <td><span class="badge badge-warning">Overdue</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Payment">💳</button>
+                                    <button class="icon-btn" title="History">📋</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>NP-2023-005</strong></td>
+                            <td>Kirkuk Transport Services</td>
+                            <td><strong>$50,000</strong></td>
+                            <td>12 months</td>
+                            <td>5.0%</td>
+                            <td>Monthly</td>
+                            <td>2025-03-15</td>
+                            <td><span class="badge badge-info">Completed</span></td>
+                            <td>
+                                <div class="action-icons">
+                                    <button class="icon-btn" title="View">👁️</button>
+                                    <button class="icon-btn" title="Print">🖨️</button>
+                                    <button class="icon-btn" title="Download">📥</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            const navTabs = document.querySelectorAll('.nav-tab');
+            navTabs.forEach(navTab => navTab.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
